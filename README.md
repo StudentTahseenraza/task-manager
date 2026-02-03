@@ -160,4 +160,42 @@ An immersive **3D task management platform** featuring glass-morphism UI, smooth
     VITE_APP_VERSION=1.0.0
 
 
+📮 API Documentation (Postman)
+------------
+🔹 Postman Collection
+=
+A Postman collection is provided to test all authentication, profile, and CRUD APIs.
+
+Steps to use:
+
+Open Postman
+
+Import the collection from:
+
+/docs/TaskSphere.postman_collection.json
+
+
+Set environment variables:
+
+BASE_URL → http://localhost:5000/api/v1
+
+TOKEN → JWT token received after login
+
+The collection includes:
+
+Auth (Signup / Login)
+
+Profile (Get / Update)
+
+Tasks CRUD (Create, Read, Update, Delete)
+
+
+📈 Scaling This Application for Production 
+----------
+How would you scale this for production?
+
+For production, I would deploy the frontend on Vercel and the backend on Render/Railway with environment-based configuration. Sensitive values (JWT secrets, DB credentials, CORS origins) would be managed using environment variables, never hardcoded. CORS would be restricted to trusted domains only. MongoDB performance would be improved using indexes on frequently queried fields (userId, status, createdAt). I would introduce pagination and filtering for large datasets and add Redis caching for frequently accessed data. API rate limiting and request validation would be enforced for security. Logging and monitoring would be handled using centralized logs and health checks.
+
+
+
 
