@@ -9,13 +9,16 @@ import {
   FiBell,
   FiSettings,
   FiMoon,
-  FiSun
+  FiSun,
+  FiTrendingUp
 } from 'react-icons/fi'
 import { useState } from 'react'
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: FiHome },
   { path: '/tasks', label: 'Tasks', icon: FiCheckSquare },
+  { path: '/analytics', label: 'Analytics', icon: FiTrendingUp },
+  { path: '/profile', label: 'Profile', icon: FiUser },
 ]
 
 const EnhancedNavbar = () => {

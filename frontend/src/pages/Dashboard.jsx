@@ -7,14 +7,15 @@ import EnhancedNavbar from '../components/EnhancedNavbar'
 import AnimatedStats from '../components/AnimatedStats'
 import TaskVisualization from '../components/TaskVisualization'
 import ThreeDCube from '../components/3DCube'
-import { 
-  FiPlus, 
+import {
+  FiPlus,
   FiEdit,
   FiCalendar,
   FiTrendingUp,
   FiZap,
   FiTarget,
-  FiChevronRight
+  FiChevronRight,
+  FiUser
 } from 'react-icons/fi'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1'
@@ -22,9 +23,9 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/
 const Dashboard = () => {
   const { user, updateProfile } = useAuth()
   const [tasks, setTasks] = useState([])
-  const [stats, setStats] = useState({ 
-    total: 0, 
-    completed: 0, 
+  const [stats, setStats] = useState({
+    total: 0,
+    completed: 0,
     pending: 0,
     inProgress: 0,
     efficiency: 85
@@ -45,16 +46,16 @@ const Dashboard = () => {
       const response = await axios.get(`${API_BASE_URL}/tasks`)
       const tasksData = response.data
       setTasks(tasksData)
-      
+
       // Calculate stats
       const total = tasksData.length
       const completed = tasksData.filter(task => task.status === 'completed').length
       const pending = tasksData.filter(task => task.status === 'pending').length
       const inProgress = tasksData.filter(task => task.status === 'in-progress').length
-      
-      setStats({ 
-        total, 
-        completed, 
+
+      setStats({
+        total,
+        completed,
         pending,
         inProgress,
         efficiency: total > 0 ? Math.round((completed / total) * 100) : 0
@@ -95,7 +96,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <EnhancedNavbar />
-      
+
       <div className="container mx-auto px-4 py-8">
         {/* Welcome Section with 3D Effects */}
         <motion.div
@@ -123,7 +124,7 @@ const Dashboard = () => {
                     <p className="text-gray-400 mt-2">Here's your productivity dashboard in 3D</p>
                   </div>
                 </motion.div>
-                
+
                 <motion.div
                   variants={containerVariants}
                   initial="hidden"
@@ -153,7 +154,7 @@ const Dashboard = () => {
                   ))}
                 </motion.div>
               </div>
-              
+
               <motion.div
                 initial={{ scale: 0, rotate: 180 }}
                 animate={{ scale: 1, rotate: 0 }}
@@ -190,21 +191,62 @@ const Dashboard = () => {
               <h3 className="text-xl font-bold mb-6 gradient-text">Quick Actions</h3>
               <div className="space-y-4">
                 {[
-                  { label: 'New Task', icon: FiPlus, color: 'from-primary-500 to-blue-500', link: '/tasks' },
-                  { label: 'Edit Profile', icon: FiEdit, color: 'from-purple-500 to-pink-500', action: () => setEditingProfile(true) },
-                  { label: 'View Calendar', icon: FiCalendar, color: 'from-green-500 to-emerald-500', link: '#' },
-                  { label: 'Analytics', icon: FiTrendingUp, color: 'from-orange-500 to-yellow-500', link: '#' }
+                  {
+                    label: 'New Task',
+                    icon: FiPlus,
+                    color: 'from-primary-500 to-blue-500',
+                    link: '/tasks',
+                    type: 'link'
+                  },
+                  {
+                    label: 'Edit Profile',
+                    icon: FiEdit,
+                    color: 'from-purple-500 to-pink-500',
+                    action: () => setEditingProfile(true),
+                    type: 'button'
+                  },
+                  {
+                    label: 'View Profile',
+                    icon: FiUser,
+                    color: 'from-green-500 to-emerald-500',
+                    link: '/profile',
+                    type: 'link'
+                  },
+                  {
+                    label: 'Analytics',
+                    icon: FiTrendingUp,
+                    color: 'from-orange-500 to-yellow-500',
+                    link: '/analytics',
+                    type: 'link'
+                  }
                 ].map((action) => (
-                  <motion.button
-                    key={action.label}
-                    whileHover={{ x: 10 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={action.action}
-                    className="w-full"
-                  >
-                    <Link
-                      to={action.link || '#'}
-                      className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+                  action.type === 'link' ? (
+                    <motion.div
+                      key={action.label}
+                      whileHover={{ x: 10 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full"
+                    >
+                      <Link
+                        to={action.link}
+                        className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center`}>
+                            <action.icon size={20} className="text-white" />
+                          </div>
+                          <span className="font-medium text-gray-200">{action.label}</span>
+                        </div>
+                        <FiChevronRight className="text-gray-400 group-hover:text-white group-hover:translate-x-2 transition-all duration-300" />
+                      </Link>
+                    </motion.div>
+                  ) : (
+                    <motion.button
+                      key={action.label}
+                      whileHover={{ x: 10 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={action.action}
+                      className="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
                     >
                       <div className="flex items-center space-x-3">
                         <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center`}>
@@ -213,8 +255,8 @@ const Dashboard = () => {
                         <span className="font-medium text-gray-200">{action.label}</span>
                       </div>
                       <FiChevronRight className="text-gray-400 group-hover:text-white group-hover:translate-x-2 transition-all duration-300" />
-                    </Link>
-                  </motion.button>
+                    </motion.button>
+                  )
                 ))}
               </div>
             </div>
@@ -232,7 +274,7 @@ const Dashboard = () => {
                   {editingProfile ? 'Cancel' : 'Edit'}
                 </motion.button>
               </div>
-              
+
               {editingProfile ? (
                 <motion.form
                   initial={{ opacity: 0, height: 0 }}
@@ -247,7 +289,7 @@ const Dashboard = () => {
                     <input
                       type="text"
                       value={profileData.name}
-                      onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                      onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                       className="input-3d w-full"
                       required
                     />
@@ -259,7 +301,7 @@ const Dashboard = () => {
                     <input
                       type="email"
                       value={profileData.email}
-                      onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                      onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                       className="input-3d w-full"
                       required
                     />
@@ -290,7 +332,7 @@ const Dashboard = () => {
                       <p className="text-gray-400">{user?.email}</p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
                       <span className="text-gray-400">Member Since</span>
@@ -332,7 +374,7 @@ const Dashboard = () => {
               <span>View All Tasks</span>
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tasks.slice(0, 6).map((task, index) => (
               <motion.div
@@ -352,24 +394,22 @@ const Dashboard = () => {
                       <p className="text-gray-400 mt-2 line-clamp-2">{task.description}</p>
                     )}
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    task.priority === 'high' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
-                    task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
-                    'bg-green-500/20 text-green-400 border border-green-500/30'
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${task.priority === 'high' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                      task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                        'bg-green-500/20 text-green-400 border border-green-500/30'
+                    }`}>
                     {task.priority}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between mt-6">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-                    task.status === 'in-progress' ? 'bg-blue-500/20 text-blue-400' :
-                    'bg-yellow-500/20 text-yellow-400'
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${task.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                      task.status === 'in-progress' ? 'bg-blue-500/20 text-blue-400' :
+                        'bg-yellow-500/20 text-yellow-400'
+                    }`}>
                     {task.status.replace('-', ' ')}
                   </span>
-                  
+
                   {task.dueDate && (
                     <div className="flex items-center space-x-2 text-sm text-gray-400">
                       <FiCalendar size={14} />
@@ -377,7 +417,7 @@ const Dashboard = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="mt-4 pt-4 border-t border-white/10">
                   <div className="flex items-center justify-between text-xs text-gray-400">
                     <span>Created: {new Date(task.createdAt).toLocaleDateString()}</span>
